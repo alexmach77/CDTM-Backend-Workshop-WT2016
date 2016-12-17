@@ -11,11 +11,16 @@ from list import List
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-myList = List('Inbox', id='0')
+VERSION = 2.0
+
+myLists = [
+    List('Inbox', id='0'),
+    List('Groceries', id='1')
+]
 myTasks = [
-    Task('Think about lunch', '0', id='0', status = Task.COMPLETED),
-    Task('Become a pro in backend development', '0', status= Task.NORMAL),
-    Task('CONQUER THE WORLD!', '0', status = Task.NORMAL)
+    Task('Think about lunch', '1', id='0', status = Task.COMPLETED),
+    Task('Become a pro in backend development', '0', id='1', status= Task.NORMAL),
+    Task('CONQUER THE WORLD!', '0', id='2', status = Task.NORMAL)
 ]
 
 # Note: Setting static_url_path to '' has the following effect:
@@ -25,25 +30,30 @@ myTasks = [
 #   - We need this, so that the front-end works properly.
 app = Flask(__name__, static_url_path='')
 
+# MARK: Static routes
 @app.route('/', methods=['GET'])
 def frontEnd():
     return send_file('static/index.html')
 
+# MARK: General routes
 @app.route('/api/version', methods=['GET'])
-def version():
-    d = {'version_number': 2.0}
-    return jsonify(d)
+def get_version():
+    return jsonify({'version': VERSION})
 
+# MARK: List routes
 @app.route('/api/lists', methods=['GET'])
-def get_list():
-    d=vars(myList)
-    return jsonify(d)
+def get_lists():
+    response = {}
+    response['lists'] = [l.__dict__ for l in myLists]
+    return jsonify(response)
 
-
-
-
+# MARK: Task routes
+@app.route('/api/lists/<string:list_id>/tasks', methods=['GET'])
+def get_tasks(list_id):
+    response = {}
+    response['tasks'] = [t.__dict__ for t in myTasks if t.list==list_id]
+    return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=20002, debug=True)
-
+    app.run(host='localhost', port=20003, debug=True)
 

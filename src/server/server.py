@@ -25,7 +25,16 @@ myTasks = [
     Task('Become a pro in backend development', '0', id='1', status= Task.NORMAL),
     Task('CONQUER THE WORLD!', '0', id='2', status = Task.NORMAL)
 ]
+##Get myTasks index where id=
+print [t.id for t in myTasks]
 
+'''
+task_id="0"
+for task in myTasks:
+    if task.id == task_id:
+        myTasks.remove(task)
+print [t.id for t in myTasks]
+'''
 # Note: Setting static_url_path to '' has the following effect:
 #   - Whenever a file is requested and there is no matching route defined
 #     the flask server will look whether the file is in the 'static/' folder
@@ -59,24 +68,52 @@ def get_tasks(list_id):
 
 #Create Task
 @app.route('/api/lists/<string:list_id>/tasks', methods=['POST'])
-def create_tasks(list_id):
-    # 1. list_id does not exist.
-    matching_list = [l for l in myLists if l.id == list_id]
-    if len(matching_list) == 0:
-        json_abort(400, "List does not exist")
+def create_task(list_id):
+    ''' creates a new task for a list '''
+
+    # 1. Check whether the specified list exists
+    if (len([l for l in myLists if l.id == list_id]) < 1):
+        json_abort(404, 'List not found')
+
+    # 2. Check whether the required parameters have been sent
+    try:
+         data = request.get_json()
+    except:
+        json_abort(400, 'No JSON provided')
+
+    if data == None:
+        json_abort(400, 'Invalid Content-Type')
+
+    title = data.get('title', None)
+    if title == None:
+        json_abort(400, 'Invalid request parameters')
+
+    # 3. calculate the next id
+    id = max([int(t.id) for t in myTasks]+[-1]) + 1
+    newTask = Task(title, list_id, id=str(id), status = Task.NORMAL)
+
+    # 4. append task to array
+    myTasks.append(newTask)
+
+    # 5. return new task
+    return jsonify(newTask.__dict__)
+
+#Delete Task
+@app.route('/api/lists/<string:list_id>/tasks/<string:task_id>', methods=['DELETE'])
+def delete_task(list_id,task_id):
+    print "deleting task"
+    #1. Error handling
 
 
-    # 2. missing title. I need to get the title from the request
-    data = request.get_json(force=True)
-    print data["title"]
-    # 3. Calculate the next task id. Need to get title and id in order to create a new task.
-    #myTasks.append(Task('Think about lunch', list_id, id='0'))
 
-
-    return "hello"
-
+    #2. Delete task
+    for task in myTasks:
+        if task.id == task_id:
+            myTasks.remove(task)
+    print [t.id for t in myTasks]
+    return jsonify({'result': True})
 
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=1337, debug=True)
+    app.run(host='localhost', port=20003, debug=True)

@@ -49,3 +49,41 @@ How it should be:
     myTasks.remove(tasks[0])
 
     return jsonify({'result': True})
+
+
+## Objects in memory
+
+if I print my object a get an addreess in my memory 0xdersijio293. Here is the object loction. Which will have some attribute and methods store in that address. The content in ecah memory address u have the attributes. 
+
+If I have task2=task, then the new task2 will also point to the same address of task1. Hence if i change task2 i will also change task 1.
+
+The only way to avoid it, is to create a new object for task2 and then give it the values of task1.
+
+
+
+##Databases
+
+
+when we create the object we store them in memory. In variables, but when we restart the server, all of them are gone.
+Hence we need a DB to store the Data in orgnzed way.
+
+
+RDBMS cpmply to the ACID model (atomicity, consistency, isolation, durability). These are the reasons why to use it instead of excel or text file.
+
+
+- Atomicity: the row is writen or not. Tne data is obtained or not. u cannot get half row.
+
+- Consistency: The DB 
+
+- Isolation: Different clients can access the db as thought there were only one instance/client accesing it. They never notice that somebody else is working in the db
+
+- Durability: Non-volatile storage, is persistent storage. Power outage is not a problem.
+
+
+
+#SQL important flags
+
+on delete cascade.
+If I delete an user in the table USERS, i want that all his tweets to be deleted.  Hence i use on delete ascade when defininig the tweets.
+
+

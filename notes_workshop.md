@@ -32,4 +32,20 @@ For every task check if the id belongs is equal to list_id, if so, then add them
     response['tasks'] = [t.__dict__ for t in myTasks if t.list==list_id]
 
 
+##Example how i do it vs doing with list comprehension
+How I do it:
 
+    #2. Delete task
+    for task in myTasks:
+        if task.id == task_id:
+            myTasks.remove(task)
+    print [t.id for t in myTasks]
+    return jsonify({'result': True})
+
+How it should be: 
+
+    # 2. Check whether the specified task exists
+    tasks = [t for t in myTasks if t.id == task_id and t.list == list_id]
+    myTasks.remove(tasks[0])
+
+    return jsonify({'result': True})

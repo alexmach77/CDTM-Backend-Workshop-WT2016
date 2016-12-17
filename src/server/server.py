@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 # coding: utf8
 
-from flask import Flask, send_file, jsonify, request
+from flask import Flask, send_file, request, jsonify
 import sys
+
+from utils import json_abort
 
 from task import Task
 from list import List
-from utils import json_abort
-
-
 
 # allow special characters (e.g. üäö ...)
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-VERSION = 2.0
+VERSION = 4.0
 
 myLists = [
     List('Inbox', id='0'),
@@ -25,16 +24,8 @@ myTasks = [
     Task('Become a pro in backend development', '0', id='1', status= Task.NORMAL),
     Task('CONQUER THE WORLD!', '0', id='2', status = Task.NORMAL)
 ]
-##Get myTasks index where id=
-print [t.id for t in myTasks]
 
-'''
-task_id="0"
-for task in myTasks:
-    if task.id == task_id:
-        myTasks.remove(task)
-print [t.id for t in myTasks]
-'''
+
 # Note: Setting static_url_path to '' has the following effect:
 #   - Whenever a file is requested and there is no matching route defined
 #     the flask server will look whether the file is in the 'static/' folder
@@ -66,7 +57,7 @@ def get_tasks(list_id):
     response['tasks'] = [t.__dict__ for t in myTasks if t.list==list_id]
     return jsonify(response)
 
-#Create Task
+# CREATE ROUTE
 @app.route('/api/lists/<string:list_id>/tasks', methods=['POST'])
 def create_task(list_id):
     ''' creates a new task for a list '''
@@ -98,22 +89,71 @@ def create_task(list_id):
     # 5. return new task
     return jsonify(newTask.__dict__)
 
-#Delete Task
+# DESTROY ROUTE
 @app.route('/api/lists/<string:list_id>/tasks/<string:task_id>', methods=['DELETE'])
-def delete_task(list_id,task_id):
-    print "deleting task"
-    #1. Error handling
+def remove_task(list_id, task_id):
+    # 1. Check whether the specified list exists
+    if (len([l for l in myLists if l.id == list_id]) < 1):
+        json_abort(404, 'List not found')
 
+    # 2. Check whether the specified task exists
+    tasks = [t for t in myTasks if t.id == task_id and t.list == list_id]
+    if (len(tasks) < 1):
+        json_abort(404, 'Task not found')
 
+    # 3. finally remove the task
+    myTasks.remove(tasks[0])
 
-    #2. Delete task
-    for task in myTasks:
-        if task.id == task_id:
-            myTasks.remove(task)
-    print [t.id for t in myTasks]
     return jsonify({'result': True})
+
+
+# UPDATE ROUTE
+@app.route('/api/lists/<string:list_id>/tasks/<string:task_id>', methods=['PUT'])
+def update_task(list_id, task_id):
+    # 1. Check whether the specified list exists
+    if (len([l for l in myLists if l.id == list_id]) < 1):
+        json_abort(404, 'List not found')
+
+    # 2. Check whether the specified task exists
+    tasks = [t for t in myTasks if t.id == task_id and t.list == list_id]
+    if (len(tasks) < 1):
+        json_abort(404, 'Task not found')
+    # 3. Check whether the required parameters have been sent
+    try:
+         data = request.get_json()
+    except:
+        json_abort(400, 'No JSON provided')
+
+    if data == None:
+        json_abort(400, 'Invalid Content-Type')
+
+    status = data.get('status', None)
+    description = data.get('description', None)
+    due = data.get('due', None)
+    revision = data.get('revision', None)
+
+    #if (status == None or description == None or due == None or revision==None):
+    #    json_abort(400, 'Invalid request parameters')
+
+    title = data.get('title', None)
+    if title == None:
+        json_abort(400, 'Invalid request parameters')
+
+
+
+    for task in myTasks:
+        if task.id==task_id:
+            task.title = title
+    print [t.title for t in myTasks]
+
+    response = {}
+    response['tasks'] = [t.__dict__ for t in myTasks if t.list==list_id]
+    return jsonify(response)
+
+
+
 
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=20003, debug=True)
+    app.run(host='localhost', port=20005, debug=True)

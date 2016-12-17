@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 # coding: utf8
 
-from flask import Flask, send_file
+from flask import Flask, send_file, jsonify
 import sys
-from list import List
+
 from task import Task
+from list import List
 
 # allow special characters (e.g. üäö ...)
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
+myList = List('Inbox', id='0')
+myTasks = [
+    Task('Think about lunch', '0', id='0', status = Task.COMPLETED),
+    Task('Become a pro in backend development', '0', status= Task.NORMAL),
+    Task('CONQUER THE WORLD!', '0', status = Task.NORMAL)
+]
 
 # Note: Setting static_url_path to '' has the following effect:
 #   - Whenever a file is requested and there is no matching route defined
@@ -17,13 +25,25 @@ sys.setdefaultencoding('utf-8')
 #   - We need this, so that the front-end works properly.
 app = Flask(__name__, static_url_path='')
 
-list1=List(0, "My first list", "once per week2")
-print vars(list1)
-
-
 @app.route('/', methods=['GET'])
 def frontEnd():
     return send_file('static/index.html')
 
+@app.route('/api/version', methods=['GET'])
+def version():
+    d = {'version_number': 2.0}
+    return jsonify(d)
+
+@app.route('/api/lists', methods=['GET'])
+def get_list():
+    d=vars(myList)
+    return jsonify(d)
+
+
+
+
+
 if __name__ == '__main__':
-    app.run(host='localhost', port=20008, debug=True)
+    app.run(host='localhost', port=20002, debug=True)
+
+

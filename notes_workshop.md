@@ -18,3 +18,9 @@ patch: changes single propoerties in the server
 5xx server error
 2xx success! =)
 
+
+
+@app.route('/version', methods=['GET'])
+def version():
+    d = {'version_number': 'Version 2.22'}
+    return flask.jsonify(**d)

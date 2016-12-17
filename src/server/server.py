@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # coding: utf8
 
-from flask import Flask, send_file, jsonify
+from flask import Flask, send_file, jsonify, request
 import sys
 
 from task import Task
 from list import List
+from utils import json_abort
+
+
 
 # allow special characters (e.g. üäö ...)
 reload(sys)
@@ -54,6 +57,26 @@ def get_tasks(list_id):
     response['tasks'] = [t.__dict__ for t in myTasks if t.list==list_id]
     return jsonify(response)
 
-if __name__ == '__main__':
-    app.run(host='localhost', port=20003, debug=True)
+#Create Task
+@app.route('/api/lists/<string:list_id>/tasks', methods=['POST'])
+def create_tasks(list_id):
+    # 1. list_id does not exist.
+    matching_list = [l for l in myLists if l.id == list_id]
+    if len(matching_list) == 0:
+        json_abort(400, "List does not exist")
 
+
+    # 2. missing title. I need to get the title from the request
+    data = request.get_json(force=True)
+    print data["title"]
+    # 3. Calculate the next task id. Need to get title and id in order to create a new task.
+    #myTasks.append(Task('Think about lunch', list_id, id='0'))
+
+
+    return "hello"
+
+
+
+
+if __name__ == '__main__':
+    app.run(host='localhost', port=1337, debug=True)

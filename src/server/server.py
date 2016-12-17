@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding: utf8
 
-from flask import Flask
+from flask import Flask, send_file
 import sys
+from list import List
+from task import Task
 
 # allow special characters (e.g. üäö ...)
 reload(sys)
@@ -15,8 +17,13 @@ sys.setdefaultencoding('utf-8')
 #   - We need this, so that the front-end works properly.
 app = Flask(__name__, static_url_path='')
 
+list1=List(0, "My first list", "once per week2")
+print vars(list1)
 
 
+@app.route('/', methods=['GET'])
+def frontEnd():
+    return send_file('static/index.html')
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=1337, debug=True)
+    app.run(host='localhost', port=20008, debug=True)

@@ -108,3 +108,20 @@ dict.get(key, default=None)
         cookieTypes.append(dict_from_row(row).get('type'))
     return cookieTypes
 
+
+
+###static method
+Is a method that affects all the instances. So if I change a variable in a static method, all the others instances that wanna get that variables, will obtain the new value.
+
+
+
+##* args and **kwargs
+def function(*args,**kwargs):
+
+
+
+
+
+
+
+

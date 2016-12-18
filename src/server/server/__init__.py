@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # coding: utf8
 
-from flask import Flask, send_file, request, jsonify
 import sys
 
+from flask import Flask, send_file, request, jsonify
 from utils import json_abort
-
-from task import Task
-from list import List
-from database import *
-
+from models import *
 # allow special characters (e.g. üäö ...)
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -33,6 +29,9 @@ myTasks = [
 #   - As a consequence, everyone can remotely access files within 'static/'
 #   - We need this, so that the front-end works properly.
 app = Flask(__name__, static_url_path='')
+
+from database import *
+
 
 # MARK: Static routes
 @app.route('/', methods=['GET'])
@@ -155,7 +154,3 @@ def update_task(list_id, task_id):
 
 
 
-
-if __name__ == '__main__':
-    init_db()
-    app.run(host='localhost', port=20005, debug=True)

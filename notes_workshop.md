@@ -87,3 +87,24 @@ on delete cascade.
 If I delete an user in the table USERS, i want that all his tweets to be deleted.  Hence i use on delete ascade when defininig the tweets.
 
 
+##Sql injection
+in oython we use placeholders to pass variables in querryes and we do it in the execute statemet. If we do it in the query statement anybody can send a code inside a variable and drop all the DB.
+
+But if we do it in the execute statemetn, then python takes care that this do not happen.
+
+
+##Python dictionaries
+dict.get is one of the many built-in functions of the dictionaries. It returns the value for the given key.
+
+dict.get(key, default=None)
+	
+	def dict_from_row(row):
+	    ''' Converts a query result into a dict '''
+	    return {} if row == None else dict(zip(row.keys(), row))
+
+
+    cookieTypes = []
+    for row in cur:
+        cookieTypes.append(dict_from_row(row).get('type'))
+    return cookieTypes
+

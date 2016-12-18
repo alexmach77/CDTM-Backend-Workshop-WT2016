@@ -2,6 +2,7 @@ import os
 
 import config
 from server import *
+from server.database import *
 
 def init_app():
     if config.DB_SEED:
@@ -14,3 +15,6 @@ def init_app():
 if __name__ == '__main__':
     init_app()
     app.run(host=config.HOST, port=config.PORT, debug=True)
+    #db_get_lists()
+
+

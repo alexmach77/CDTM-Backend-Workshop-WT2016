@@ -1,7 +1,7 @@
 from flask import request, jsonify
 
 from server import app
-from server.utils import json_abort
+from server.utils import json_abort, list_exists, has_json
 from server.models import *
 
 myLists = [
@@ -16,6 +16,8 @@ myTasks = [
 
 # MARK: Task routes
 @app.route('/api/lists/<string:list_id>/tasks', methods=['GET'])
+@list_exists
+#@has_json
 def get_tasks(list_id):
     response = {}
     response['tasks'] = [t.__dict__ for t in myTasks if t.list==list_id]

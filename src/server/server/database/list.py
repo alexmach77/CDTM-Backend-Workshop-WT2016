@@ -22,9 +22,8 @@ def db_list_exists(list_id):
 def db_get_lists():
     ''' Queries the db for all lists'''
     query = '''
-
+        SELECT * from Lists order by id asc
     '''
-
     with app.app_context():
         cur = get_db().cursor()
         cur.execute(query, [])

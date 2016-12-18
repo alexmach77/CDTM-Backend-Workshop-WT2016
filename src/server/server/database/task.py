@@ -12,7 +12,7 @@ from server.models import Task
 def db_get_tasks_for_list(list_id):
     ''' Returns all tasks from the database for a given list'''
     query = '''
-
+        select * from Tasks where list = ? order by id asc
     '''
     with app.app_context():
         cur = get_db().cursor()
@@ -27,7 +27,7 @@ def db_get_tasks_for_list(list_id):
 def db_get_task(list_id, task_id):
     ''' Queries the db for a task with the specified id'''
     query = '''
-
+        select * from Tasks where id = ? and list = ? order by id asc
     '''
 
     with app.app_context():
@@ -40,7 +40,9 @@ def db_get_task(list_id, task_id):
 def db_create_task(list_id, title):
     ''' Inserts a new task and returns it '''
     query = '''
-
+        insert into Tasks
+        (title,list,status)
+        values (?,?,'NORMAL')
     '''
 
     with app.app_context():
@@ -54,7 +56,14 @@ def db_create_task(list_id, title):
 def db_update_task(list_id, task):
     ''' Updates a task and returns it '''
     query = '''
-
+        update Tasks
+        set title=?,
+            list=?,
+            status=?,
+            description=?,
+            due=?,
+            revision=?
+        where id=?
     '''
 
     with app.app_context():
@@ -68,6 +77,8 @@ def db_update_task(list_id, task):
 def db_delete_task(id):
     ''' Deletes the task with the specified id '''
     query = '''
+        DELETE from Tasks
+        where id = id
 
     '''
 

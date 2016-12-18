@@ -15,8 +15,4 @@ sys.setdefaultencoding('utf-8')
 #   - We need this, so that the front-end works properly.
 app = Flask(__name__, static_url_path='')
 
-
-
-
-if __name__ == '__main__':
-    app.run(host='localhost', port=1337, debug=True)
+from routes import *

@@ -27,7 +27,7 @@ def dict_from_row(row):
 # TODO: Get all the different cookie types
 def db_get_cookie_types():
     # Save your SQL query as a string into the variable query
-    query = ''
+    query = 'select distinct type from Cookies ORDER BY type asc'
 
     db = get_db()
     cur = db.cursor()
